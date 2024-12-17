@@ -50,6 +50,22 @@ app.get('/api/movie/:id', async (req, res) => {
     }
 });
 
+// TV details by ID (example endpoint)
+app.get('/api/tv/:id', async (req, res) => {
+    const movieId = req.params.id;
+    
+    try {
+        const response = await axios.get(`https://api.themoviedb.org/3/tv/${movieId}`, {
+            params: { api_key: TMDB_API_KEY },
+        });
+        res.json(response.data);
+    } catch (error) {
+        console.error('Error fetching movie details:', error.message);
+        res.status(500).json({ error: 'Failed to fetch movie details from TMDB' });
+    }
+});
+
+
 
 // Start Server
 app.listen(PORT, () => {
