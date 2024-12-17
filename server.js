@@ -18,10 +18,10 @@ if (!TMDB_API_KEY) {
 }
 
 app.get('/api/*', async (req, res) => {
-    const endpoint = req.params[0]; // Extract everything after '/api/'
+    const endpoint = req.params[0]; // Captures everything after '/api/'
     const queryParams = req.query;
 
-    console.log(`Received endpoint: ${endpoint}`);
+    console.log(`Received endpoint: ${endpoint}`); // Debug
     console.log(`Query parameters:`, queryParams);
 
     try {
@@ -32,6 +32,21 @@ app.get('/api/*', async (req, res) => {
     } catch (error) {
         console.error('Error:', error.message);
         res.status(500).json({ error: 'Failed to fetch data from TMDB' });
+    }
+});
+
+// Movie details by ID (example endpoint)
+app.get('/api/movie/:id', async (req, res) => {
+    const movieId = req.params.id;
+    
+    try {
+        const response = await axios.get(`https://api.themoviedb.org/3/movie/${movieId}`, {
+            params: { api_key: TMDB_API_KEY },
+        });
+        res.json(response.data);
+    } catch (error) {
+        console.error('Error fetching movie details:', error.message);
+        res.status(500).json({ error: 'Failed to fetch movie details from TMDB' });
     }
 });
 
