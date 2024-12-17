@@ -17,13 +17,16 @@ if (!TMDB_API_KEY) {
     process.exit(1); // Exit the server if no API key
 }
 
-// Hardcoded Proxy Endpoint for /search/multi
-app.get('/api/search/multi', async (req, res) => {
+app.get('/api/*', async (req, res) => {
+    const endpoint = req.params[0]; // Extract everything after '/api/'
     const queryParams = req.query;
 
+    console.log(`Received endpoint: ${endpoint}`);
+    console.log(`Query parameters:`, queryParams);
+
     try {
-        const response = await axios.get('https://api.themoviedb.org/3/search/multi', {
-            params: { ...queryParams, api_key: TMDB_API_KEY },
+        const response = await axios.get(`https://api.themoviedb.org/3/${endpoint}`, {
+            params: { ...queryParams, api_key: TMDB_API_KEY }
         });
         res.json(response.data);
     } catch (error) {
@@ -31,6 +34,7 @@ app.get('/api/search/multi', async (req, res) => {
         res.status(500).json({ error: 'Failed to fetch data from TMDB' });
     }
 });
+
 
 // Start Server
 app.listen(PORT, () => {
